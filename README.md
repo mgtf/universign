@@ -1,6 +1,7 @@
 # Universign
 
-Minimal ruby wrapper around the Universign API (WIP)
+A ruby client for the Universign XML-RPC api.
+Note : VERY EXPERIMENTAL AND INCOMPLETE
 
 ## Installation
 
@@ -20,18 +21,25 @@ Or install it yourself as:
 
 ## Usage
 
-TODO
+### Test 
 
-## Development
+See spec/test.rb
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### Configuration options
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+Universign.configure do |config|
+  config.user = '<usually your email>'
+  config.password = '<password>'
+  config.language = 'fr'
+end
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/mgtf/universign. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/mgtf/universign. 
+This project is intended to be a safe, welcoming space for collaboration, and contributors are 
+expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

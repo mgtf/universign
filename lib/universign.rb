@@ -1,24 +1,95 @@
+# encoding: utf-8
 require 'universign/version'
+require 'base64'
+require 'xmlrpc/client'
 
 module Universign
-  # Your code goes here...
 
+  class << self
+    attr_accessor :configuration
+  end
 
-  # encoding : utf-8require 'rubygems'require 'base64'require 'httparty'
-=begin
-  class Timestamp
-    include HTTParty
-    base_uri 'https://ws.universign.eu/tsa/'
+  def self.configure
+    self.configuration ||= Configuration.new
+    yield(configuration) if block_given?
+  end
 
-    def self.doTsp(login, pwd, hashAlgo, hashValue, withCert)
-      data = { :hashAlgo => hashAlgo, :hashValue => hashValue, :withCert => withCert }
-      h = {
-          'content-type' => 'application/x-www-form-urlencoded',
-          'authorization' => "Basic #{Base64.encode64("#{login + ":" + pwd}")}"
-      }
-      return post('/post', :headers=> h, :body => data)
+  class Configuration
+    attr_accessor :language, :production, :user, :password, :debug,
+                  :profile
+
+    def initialize
+      @language = 'en'
+      @debug = false
+      @production = false
+      @profile = 'default'
     end
   end
-=end
 
+  module Sign
+
+    class << self
+
+      def client
+        raise 'You need to set config options' if Universign.configuration.nil?
+        host = Universign.configuration.production ? 'sign.cryptolog.com' : 'sign.test.cryptolog.com'
+        path = '/sign/rpc'
+        client = Universign::Sign::Client.new(
+            host, path, nil, nil, nil, Universign.configuration.user, Universign.configuration.password, true
+        )
+        client.set_debug if Universign.configuration.debug
+        client
+      end
+
+    end
+
+    def self.transactionSigner(phoneNum, emailAddress, firstname, lastname)
+      Signer.new(phoneNum, emailAddress, firstname, lastname)
+    end
+
+    def self.transactionDocument(content, name)
+      Document.new(XMLRPC::Base64.new(content), name)
+    end
+
+    Document = Struct.new(:content, :name)
+    Signer = Struct.new(:phoneNum, :emailAddress, :firstname, :lastname)
+
+    class Client < XMLRPC::Client
+
+      ContractSignatureRequest = Struct.new(
+          :documents,
+          :signers,
+          :successUrl,
+          :failUrl,
+          :cancelUrl,
+          :handwrittenSignatureMode,
+          :profile,
+          :certificateType,
+          :language
+      )
+
+      # Request signature (Client side)
+      def requestTransaction(transactionSigners, transactionDocuments, successUrl, failUrl, cancelUrl)
+        transactionSigners = [transactionSigners] unless transactionSigners.is_a? Array
+        transactionDocuments = [transactionDocuments] unless transactionDocuments.is_a? Array
+        request = ContractSignatureRequest.new(
+            transactionDocuments,
+            transactionSigners,
+            successUrl,
+            failUrl,
+            cancelUrl,
+            0,
+            Universign.configuration.profile,
+            'simple',
+            Universign.configuration.language
+        )
+        call('requester.requestTransaction', request)
+      end
+
+      def set_debug
+        @http.set_debug_output($stderr);
+      end
+
+    end
+  end
 end
