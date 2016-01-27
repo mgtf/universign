@@ -92,6 +92,10 @@ module Universign
         call('requester.getTransactionInfo', transactionId)
       end
 
+      def getDocuments(transactionId)
+        call('requester.getDocuments', transactionId)
+      end
+
       def set_debug
         @http.set_debug_output($stderr);
       end
