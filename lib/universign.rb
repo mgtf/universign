@@ -43,25 +43,30 @@ module Universign
 
     end
 
-    def self.transactionSigner(phoneNum, emailAddress, firstname, lastname)
-      Signer.new(phoneNum, emailAddress, firstname, lastname)
+    Document = Struct.new(:content, :name)
+    Signer = Struct.new(
+        :phoneNum,
+        :emailAddress,
+        :firstname,
+        :lastname,
+        :successUrl,
+        :failUrl,
+        :cancelUrl
+    )
+
+    def self.transactionSigner(phoneNum, emailAddress, firstname, lastname, successUrl, failUrl, cancelUrl)
+      Signer.new(phoneNum, emailAddress, firstname, lastname, successUrl, failUrl, cancelUrl)
     end
 
     def self.transactionDocument(content, name)
       Document.new(XMLRPC::Base64.new(content), name)
     end
 
-    Document = Struct.new(:content, :name)
-    Signer = Struct.new(:phoneNum, :emailAddress, :firstname, :lastname)
-
     class Client < XMLRPC::Client
 
       ContractSignatureRequest = Struct.new(
           :documents,
           :signers,
-          :successUrl,
-          :failUrl,
-          :cancelUrl,
           :handwrittenSignatureMode,
           :profile,
           :certificateType,
@@ -69,15 +74,12 @@ module Universign
       )
 
       # Request signature (Client side)
-      def requestTransaction(transactionSigners, transactionDocuments, successUrl, failUrl, cancelUrl)
+      def requestTransaction(transactionSigners, transactionDocuments)
         transactionSigners = [transactionSigners] unless transactionSigners.is_a? Array
         transactionDocuments = [transactionDocuments] unless transactionDocuments.is_a? Array
         request = ContractSignatureRequest.new(
             transactionDocuments,
             transactionSigners,
-            successUrl,
-            failUrl,
-            cancelUrl,
             0,
             Universign.configuration.profile,
             'simple',
