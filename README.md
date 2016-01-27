@@ -23,7 +23,7 @@ Or install it yourself as:
 
 ### Test 
 
-See spec/test.rb
+See [test.rb](https://github.com/mgtf/universign/blob/master/spec/test.rb)
 
 ### Configuration options
 
