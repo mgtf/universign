@@ -9,7 +9,7 @@ end
 
 filecontent = File.read File.expand_path('../../spec/test.pdf', __FILE__)
 
-signer = Universign::Sign.transactionSigner('33 666666666', 'test@domain.com', 'Matthieu', 'Foillard')
+signer = Universign::Sign.transactionSigner('33 666666666', 'test@domain.com', 'Jackie', 'Chan')
 document = Universign::Sign.transactionDocument(filecontent, 'test.pdf')
 client = Universign::Sign.client
 puts client.requestTransaction(
