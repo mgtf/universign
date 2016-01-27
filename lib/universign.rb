@@ -49,13 +49,13 @@ module Universign
         :emailAddress,
         :firstname,
         :lastname,
-        :successUrl,
-        :failUrl,
-        :cancelUrl
+        :successURL,
+        :failURL,
+        :cancelURL
     )
 
-    def self.transactionSigner(phoneNum, emailAddress, firstname, lastname, successUrl, failUrl, cancelUrl)
-      Signer.new(phoneNum, emailAddress, firstname, lastname, successUrl, failUrl, cancelUrl)
+    def self.transactionSigner(phoneNum, emailAddress, firstname, lastname, successURL, failURL, cancelURL)
+      Signer.new(phoneNum, emailAddress, firstname, lastname, successURL, failURL, cancelURL)
     end
 
     def self.transactionDocument(content, name)
