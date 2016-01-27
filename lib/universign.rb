@@ -64,7 +64,7 @@ module Universign
 
     class Client < XMLRPC::Client
 
-      ContractSignatureRequest = Struct.new(
+      RequestTransaction = Struct.new(
           :documents,
           :signers,
           :handwrittenSignatureMode,
@@ -77,7 +77,7 @@ module Universign
       def requestTransaction(transactionSigners, transactionDocuments)
         transactionSigners = [transactionSigners] unless transactionSigners.is_a? Array
         transactionDocuments = [transactionDocuments] unless transactionDocuments.is_a? Array
-        request = ContractSignatureRequest.new(
+        request = RequestTransaction.new(
             transactionDocuments,
             transactionSigners,
             0,
@@ -86,6 +86,10 @@ module Universign
             Universign.configuration.language
         )
         call('requester.requestTransaction', request)
+      end
+
+      def getTransactionInfo(transactionId)
+        call('requester.getTransactionInfo', transactionId)
       end
 
       def set_debug
