@@ -11,18 +11,26 @@ end
 
 filecontent = File.read File.expand_path('../../spec/test.pdf', __FILE__)
 
-signer = Universign::Sign.transactionSigner(
-    '33 666666666', 'test@domain.com', 'Jackie', 'Chan',
-    'http://www.test.com/success', 'http://www.test.com/fail', 'http://www.test.com/cancel'
-)
-document = Universign::Sign.transactionDocument(filecontent, 'test.pdf')
+test_signer = {
+    phoneNum: '33 666666666',
+    emailAddress: 'test@domain.com',
+    firstname: 'Jackie',
+    lastname: 'Chan',
+    successURL: 'http://www.test.com/success',
+    failURL: 'http://www.test.com/fail',
+    cancelURL: 'http://www.test.com/cancel',
+}
+
+signer = Universign::Sign.transaction_signer(test_signer)
+
+document = Universign::Sign.transaction_document(filecontent, 'test.pdf')
 client = Universign::Sign.client
 
-response = client.requestTransaction signer, document
+response = client.request_transaction signer, document
 
 transactionId = response['id']
 
 puts "Redirect url : #{response['url']}"
 puts "Transaction ID : #{transactionId}"
 
-puts client.getTransactionInfo(transactionId).inspect
+puts client.get_transaction_info(transactionId).inspect
