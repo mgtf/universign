@@ -17,32 +17,19 @@ module Universign
   # Configuration class
   class Configuration
     attr_accessor :language, :production, :user, :password, :debug,
-                  :profile
+                  :profile, :handwritten_signature_mode
 
     def initialize
       @language = 'en'
       @debug = false
       @production = false
       @profile = 'default'
+      @handwritten_signature_mode = 0
     end
   end
 
   module Sign
     class << self
-      SignerDefaultOptions = { firstname: nil,
-                               lastname: nil,
-                               organization: nil,
-                               profile: 'default',
-                               emailAddress: nil,
-                               phoneNum: nil,
-                               role: 'signer',
-                               signatureField: nil,
-                               successURL: nil,
-                               cancelURL: nil,
-                               failURL: nil,
-                               certificateType: 'simple',
-                               idDocuments: nil
-      }.freeze
       SANDBOX_URL = 'sign.test.cryptolog.com'.freeze
       PROD_URL = 'sign.cryptolog.com'.freeze
 
@@ -60,9 +47,8 @@ module Universign
       end
 
       def transaction_signer(options = {})
-        options = options.reverse_merge(SignerDefaultOptions)
         validate_transaction_signer_argument options
-        options.reject! { |_, v| v.nil? }
+        options
       end
 
       def transaction_document(content, name)
@@ -73,23 +59,25 @@ module Universign
 
       def validate_transaction_signer_argument(options)
         fail(ArgumentError, 'You have to provide a firstname') if
-            options[:firstname].empty?
+            options[:firstname].to_s == ''
         fail(ArgumentError, 'You have to provide a lastname') if
-            options[:lastname].empty?
+            options[:lastname].to_s == ''
         fail(ArgumentError, 'You have to provide an email') if
-            options[:emailAddress].empty?
+            options[:emailAddress].to_s == ''
       end
     end
 
     class Client < XMLRPC::Client
       # Request signature (Client side)
-      def request_transaction(signers, docs)
-        signers = [signers] unless signers.is_a? Array
-        docs = [docs] unless docs.is_a? Array
-        request = { documents: docs, signers: signers,
-                    handwrittenSignatureMode: 0,
-                    profile: Universign.configuration.profile,
-                    language: Universign.configuration.language }
+      def request_transaction(signers, docs, options = {})
+        options[:documents] = (docs.is_a? Array) ? docs : [docs]
+        options[:signers] = (signers.is_a? Array) ? signers : [signers]
+        request = options.reverse_merge(
+            handwrittenSignatureMode: \
+            Universign.configuration.handwritten_signature_mode,
+            profile: Universign.configuration.profile,
+            language: Universign.configuration.language
+        )
         call('requester.requestTransaction', request)
       end
 

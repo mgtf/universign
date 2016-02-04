@@ -1,6 +1,13 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'universign.rb'
 
+puts '-= Universign test script =-'
+puts 'Note that you have to create a developer account first (sandbox)'
+puts 'and set UNIVERSIGN_USER and UNIVERSIGN_PASSWORD environment variable'
+
+fail 'You have to set UNIVERSIGN_USER environment variable' if ENV['UNIVERSIGN_USER'].to_s == ''
+fail 'You have to set UNIVERSIGN_PASSWORD environment variable' if ENV['UNIVERSIGN_PASSWORD'].to_s == ''
+
 Universign.configure do |config|
   config.user = ENV['UNIVERSIGN_USER']
   config.password = ENV['UNIVERSIGN_PASSWORD']
