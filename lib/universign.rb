@@ -32,13 +32,13 @@ module Universign
     class << self
       SANDBOX_URL = 'sign.test.cryptolog.com'.freeze
       PROD_URL = 'sign.cryptolog.com'.freeze
+      PATH = '/sign/rpc'.freeze
 
       def client
         fail 'You need to set config options' if Universign.configuration.nil?
         host = Universign.configuration.production ? PROD_URL : SANDBOX_URL
-        path = '/sign/rpc'
         client = Universign::Sign::Client.new(
-            host, path, nil, nil, nil,
+            host, PATH, nil, nil, nil,
             Universign.configuration.user,
             Universign.configuration.password, true
         )
@@ -51,8 +51,8 @@ module Universign
         options
       end
 
-      def transaction_document(content, name)
-        { content: XMLRPC::Base64.new(content), name: name }
+      def transaction_document(content, name, option = {})
+        { content: XMLRPC::Base64.new(content), name: name }.merge option
       end
 
       private
