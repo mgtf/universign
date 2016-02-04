@@ -10,7 +10,10 @@ Gem::Specification.new do |spec|
   spec.email         = ['mgf@iotanet.net']
 
   spec.summary       = %q{A ruby client for the Universign XML-RPC api}
-  spec.description   = %q{A ruby client for the Universign XML-RPC api.\nBased on Universign documentation Version: 7.12.1}
+  spec.description = <<-EOF
+  A ruby client for the Universign XML-RPC api.
+  Based on Universign documentation Version: 7.12.1
+  EOF
   spec.homepage      = 'https://www.github.com/mgtf/universign'
   spec.license       = 'MIT'
 
