@@ -51,8 +51,8 @@ module Universign
         options
       end
 
-      def transaction_document(content, name, option = {})
-        { content: XMLRPC::Base64.new(content), name: name }.merge option
+      def transaction_document(content, name, options = {})
+        { content: XMLRPC::Base64.new(content), name: name }.merge options
       end
 
       private
