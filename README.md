@@ -1,7 +1,7 @@
 # Universign
 
 A ruby client for the Universign XML-RPC api.
-Based on Universign documentation Version: 7.12.1
+Based on Universign documentation Version: 7.12.1 and 8.2.5
 
 ## Installation
 
