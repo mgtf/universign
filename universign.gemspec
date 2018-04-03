@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{A ruby client for the Universign XML-RPC api}
   spec.description = <<-EOF
   A ruby client for the Universign XML-RPC api.
-  Based on Universign documentation Version: 7.12.1
+  Based on Universign documentation Version: 8.2.5
   EOF
   spec.homepage      = 'https://www.github.com/mgtf/universign'
   spec.license       = 'MIT'

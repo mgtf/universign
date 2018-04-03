@@ -21,15 +21,15 @@ end
 filecontent = File.read File.expand_path('../../spec/test.pdf', __FILE__)
 
 test_signer = {
-    phoneNum: '33666666666',
-    emailAddress: 'signeremail@domain.com',
-    firstname: 'SignerFirstname',
-    lastname: 'SignerLastname',
-    successURL: 'http://www.test.com/success',
-    failURL: 'http://www.test.com/fail',
-    cancelURL: 'http://www.test.com/cancel',
-    universignId: 'internal-id-12',
-    signatureField: { page: 1, x: 10, y: 10, signerIndex: 0 }
+  phoneNum: '33666666666',
+  emailAddress: 'signeremail@domain.com',
+  firstname: 'SignerFirstname',
+  lastname: 'SignerLastname',
+  successURL: 'http://www.test.com/success',
+  failURL: 'http://www.test.com/fail',
+  cancelURL: 'http://www.test.com/cancel',
+  universignId: 'internal-id-12',
+  signatureField: { page: 1, x: 10, y: 10, signerIndex: 0 }
 }
 
 signer = Universign::Sign.transaction_signer(test_signer)
@@ -38,14 +38,14 @@ document = Universign::Sign.transaction_document(filecontent, 'test.pdf')
 client = Universign::Sign.client
 
 response = client.request_transaction signer, document, {
-    finalDocSent: true,
-    handwrittenSignatureMode: 1,
-    description: 'Transaction name'
+  finalDocSent: true,
+  handwrittenSignatureMode: 1,
+  description: 'Transaction name'
 }
 
-transactionId = response['id']
+transaction_id = response['id']
 
 puts "Redirect url : #{response['url']}"
-puts "Transaction ID : #{transactionId}"
+puts "Transaction ID : #{transaction_id}"
 
-puts client.get_transaction_info(transactionId).inspect
+puts client.get_transaction_info(transaction_id).inspect

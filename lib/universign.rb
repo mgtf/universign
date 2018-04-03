@@ -31,7 +31,7 @@ module Universign
   module Sign
     class << self
       SANDBOX_URL = 'sign.test.cryptolog.com'.freeze
-      PROD_URL = 'sign.cryptolog.com'.freeze
+      PROD_URL = 'ws.universign.eu'.freeze
       PATH = '/sign/rpc'.freeze
 
       def client
