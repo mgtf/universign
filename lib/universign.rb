@@ -29,6 +29,16 @@ module Universign
   end
 
   module Sign
+
+    module Status
+      READY = 0
+      EXPIRED = 1
+      COMPLETED = 2
+      CANCELED = 3
+      FAILED = 4
+      PENDING_RA_VALIDATION = 5
+    end
+
     class << self
       SANDBOX_URL = 'sign.test.cryptolog.com'.freeze
       PROD_URL = 'ws.universign.eu'.freeze
@@ -53,6 +63,25 @@ module Universign
 
       def transaction_document(content, name, options = {})
         { content: XMLRPC::Base64.new(content), name: name }.merge options
+      end
+
+      def list_transactions(
+          status: Universign::Sign::Status::COMPLETED,
+          not_before: nil, not_after: nil, start_range: 0, res: []
+      )
+        options = { status: status, startRange: start_range }
+        options[:notBefore] = not_before if not_before.is_a? Date
+        options[:notAfter] = not_after if not_after.is_a? Date
+        r = client.call('requester.listTransactions', options)
+        return res unless r.count > 0
+        res += r
+        list_transactions(
+            status: status,
+            not_before: not_before,
+            not_after: not_after,
+            start_range: start_range + r.count,
+            res: res
+        )
       end
 
       private
